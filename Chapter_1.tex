@@ -1,0 +1,173 @@
+\chapter{Covid Model}
+
+\section{Model Structure}
+
+Below is a description of the compartmental model. We adapt the basic SEIR model to include age structure, asymptomatic infection, progression of severe infection and various control measures. For a full breakdown of variables and parameters used in the model, see Tables \ref{Table; variable names} and \ref{Table; parameter names}.
+
+
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.95\textwidth}
+    \centering
+    \input{model_diagram}
+    \end{minipage}
+\end{figure}
+
+
+
+
+\begingroup
+\renewcommand{\arraystretch}{1.3}%
+\begin{table}[H]
+    \centering
+\begin{tabular}{|*4{>{\renewcommand{\arraystretch}{1}}l|}}
+    \hline
+    \textbf{Variable symbol} & \textbf{Name} \\
+    \hline
+    $S_i$ &	Susceptible (age category $i$)\\
+    \hline
+    $E_i$ &	Exposed (presymptomatic infection)\\
+    \hline
+    $I_i$ &	Infected (symptomatic and infectious)\\
+    \hline
+    $A_i$ &	Asymptomatic infected (infectious)\\
+    \hline
+    $R_i$ &	Recovered\\
+    \hline
+    $H_i$ &	Requiring hospital care\\
+    \hline
+    $C_i$ &	Requiring intensive care\\
+    \hline
+    $D_i$ &	Dead\\
+    \hline
+    $F_i$ &	Moved offsite (high risk categories only)\\
+    \hline
+\end{tabular}
+\caption{Variable names and symbols. For a full breakdown of parameter values and their sources, see Table \ref{TABLE1}.}
+\label{Table; variable names}%this
+\end{table}
+\endgroup
+\renewcommand{\arraystretch}{1}
+
+\begingroup
+\renewcommand{\arraystretch}{1.3}%
+\begin{table}[H]
+    \centering
+\begin{tabular}{|*4{>{\renewcommand{\arraystretch}{1}}l|}}
+    \hline
+    \textbf{Parameter symbol} & \textbf{Name} \\
+    \hline
+    $T_L$ &	Time latent\\
+    \hline
+    $T_I$ &	Time infectious\\
+    \hline
+    $T_H$ &	Time in hospital \\
+    \hline
+    $T_C$ &	Time in critical condition if care received\\
+    \hline
+    $T_N$ &	Time in critical condition if care not received\\
+    \hline
+    \hline
+    $a$ &	Proportion asymptomatic\\
+    \hline
+    $h$ &	Proportion requiring hospital care\\
+    \hline
+    $c$ &	Proportion requiring critical care\\
+    \hline
+    $d_C$ &	Probability of death if critical and care is received\\
+    \hline
+    \hline
+    $C$ & Contact matrix (age-structured) \\
+    \hline
+    $\beta$ &	Transmission rate\\
+    \hline
+    $M_i$ &	Rate of removal of susceptible high risk people\\
+    \hline
+    $L$ &	Rate of removal/isolation of infected individuals\\
+    \hline
+    $B$ &	ICU bed capacity\\
+    \hline
+\end{tabular}
+\caption{Parameter names and symbols. For a full breakdown of parameter values and their sources, see Table \ref{TABLE1}.}
+\label{Table; parameter names}%this
+\end{table}
+\endgroup
+\renewcommand{\arraystretch}{1}
+
+The model consists of the following system, for a given age category $i$:
+\begin{align}
+    \Dot{S}_i ={}& - S_i \color{blue}\beta \mathbf{C_i} \color{black} \cdot (\mathbf{I}+\mathbf{A})
+    -\color{blue} M_i \color{black} S_i,\\ 
+    \Dot{E}_i ={}& S_i \color{blue}\beta \mathbf{C_i} \color{black} \cdot (\mathbf{I}+\mathbf{A}) 
+    - E_i /T_L ,\\
+    \Dot{I}_i ={}& (1-a) E_i /T_L
+    - I_i /T_I
+    -\color{blue} L \color{black} I_i ,\\ 
+    \Dot{A}_i ={}&  a E_i /T_L
+    - A_i /T_I,\\ 
+    \Dot{R}_i ={}&  
+    \color{green}A_i /T_I\color{black}
+    + \color{green} (1-h) \color{black} I_i /T_I
+    + \color{green} (1-c) \color{black} H_i /T_H
+    + \color{blue} L \color{green} (1-h) \color{black} I_i
+    ,\\
+    \Dot{H}_i ={}&  \color{purple} h \color{black} I_i  /T_I
+    - H_i /T_H
+    + \color{green} r (C_i) \color{black}
+    + \color{blue} L \color{black} \color{purple} h \color{black} I_i
+    ,\\
+    \Dot{C}_i ={}&  \color{purple} c \color{black} H_i /T_H
+    - \color{blue} r (C_i) \color{black}
+    - \color{blue} d (C_i) \color{black}
+    ,\\
+    \Dot{D}_i ={}&  \color{purple} d (C_i) \color{black}, \\
+    \Dot{F}_i ={}&  \color{blue} M_i \color{black} S_i.
+\end{align}
+
+We have a \textcolor{green}{recovery pathway}, a \textcolor{purple}{hospital pathway} and we have \textcolor{blue}{control measures}. We use $\mathbf{C}_i$ to denote the $i$th row of the contact matrix $C$, and $\mathbf{I}$, $\mathbf{A}$ are vectors containing the numbers of symptomatic and asymptomatic people with each element corresponding to an age category.
+
+We will now explain how the following functions work: $r$, $d$, $M_i$ and $L$.
+
+\subsection{Critical care: recovery and death rates}
+Here our recovery and death rates ($r$ and $d$) from critical care are given by:
+\begin{align}
+    r(C_i) ={}& T_C^{-1} (1-d_C) \mathrm{min}(C_i, \color{blue}B^*\color{black}),\\
+    d(C_i) ={}& T_C^{-1} d_C \mathrm{min}(C_i, \color{blue}B^*\color{black}) + T_N^{-1} \mathrm{max}(C_i- \color{blue}B^*\color{black},0).
+\end{align}
+Here $B^*$ is the number of beds available for this age group (which is just split proportionally, i.e. no preferential allocation of beds occurs, they are allocated on a first come first served basis). We have $d_C$ is the probability of survival given a bed, and that all who don't receive a bed (but need one) die.
+
+\subsection{Moving vulnerable people offsite}
+The rate of moving offsite due to risk status is given by:
+\begin{align}
+    M_i ={}& \mathrm{min}(M,S^*)/S^*,
+\end{align}
+for the time that each control is implemented (and 0 otherwise). $S^*(t)$ is the total number of susceptible people in the risk categories we are removing. This corresponds to random selection of people within these categories. We cannot remove more people than we have, which is why we need the minimum of $M$ and $S^*$.
+
+\subsection{Moving infectious people offsite}
+Similarly, the rate of moving offsite due to symptomatic infection is given by:
+\begin{align}
+    L ={}& L^*/I^*,
+\end{align}
+where $I^*(t)$ is the total number of symptomatic people at that time. This corresponds to removal of symptomatic people on a random basis, removing $L^*$ people per day.
+
+\section{Control measures}
+
+\subsection{Improve hygiene/sanitation provision}
+Reduces the transmission rate $\beta$.
+
+\subsection{Shielding}
+Restructuring the camp so that the young and old have reduced contact. This corresponds to reducing contacts between these groups in the contact matrix $C$, but increasing contacts within the groups.
+
+\subsection{Move vulnerable offsite}
+Move a maximum of $M$ high risk susceptible people offsite per day.
+
+\subsection{Remove symptomatic infectious people}
+Move a maximum of $L^*$ infectious people offsite per day.
+
+\subsection{Increase number of intensive care beds}
+Increasing $B$ increases the number of people who can recover if they reach the critical stage of infection.
+
+
+
+

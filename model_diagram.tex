@@ -1,0 +1,126 @@
+
+\tikzset{
+	compartment/.style={
+		circle, draw=black, thick, minimum size=17mm, line width=1.5pt
+	},
+	SCompartment/.style={
+		compartment, minimum size=12mm, fill=blue!50
+	},
+	ECompartment/.style={
+		compartment, minimum size=12mm, fill=cyan!50
+	},
+	ACompartment/.style={
+		compartment, minimum size=12mm, fill=orange!30
+	},
+	ICompartment/.style={
+		compartment, minimum size=12mm, fill=orange!80,% opacity = 0.35
+	},
+	RCompartment/.style={
+		compartment, minimum size=12mm, fill=green!50
+	},
+	HCompartment/.style={
+	%blue?
+		compartment, minimum size=12mm,  fill=red!50
+	},
+	CCompartment/.style={
+	%blue?
+		compartment, minimum size=12mm,  fill=black!50
+	},
+	DCompartment/.style={
+	%blue?
+		compartment, minimum size=12mm,  fill=purple!50
+	},
+	OCompartment/.style={
+	%blue?
+		compartment, minimum size=12mm,  fill=black!60
+	},
+	to/.style={
+		->
+	},
+	from/.style={
+		<-
+	},
+	transition/.style={
+		line width=1.5pt
+	},
+	effect/.style={
+		dashed, line width=1.5pt
+	},
+	instantaneous/.style={
+		dotted, line width=1.5pt
+	}
+}
+
+
+\begin{tikzpicture}[node distance=3cm, scale=1, on grid] %  font=\fontsize{12},
+	% Wheat septoria
+	\begin{scope}
+		% Compartments
+% 		\draw[help lines,step=1cm, gray!20] (0,0) grid (20,15);
+
+		\node [SCompartment] (S) at (2,5) {$S$};
+		\node [ECompartment] (E) [right=3cm of S] {$E$}; 
+		\node [ACompartment] (A) [below right=2cm and 3cm of E] {$A$}; 
+		\node [ICompartment] (I) [above right=2cm and 3cm of E] {$I$}; 
+		\node [RCompartment] (R) [right=3cm of A] {$R$};
+		\node [HCompartment] (H) [right=3cm of I] {$H$};
+		\node [CCompartment] (C) [right=3cm of H] {$C$};
+		\node [DCompartment] (D) [right=3cm of C] {$D$};
+		\node [OCompartment] (O) [below=3cm of S] {$F$};
+		
+		
+ 		% invisible compartments
+		\node (middleOfStoI)   [right=1.5cm of S] {};
+		\node (middleOfRtoC)   [above=0.5cm of R] {};
+		\node (aboveInf) [above=4cm of middleOfStoI, text width = 4cm, scale=0.65] {Infection (from other age categories)};
+
+		
+		
+		% transitions
+		\path (S) edge [to, transition ] (E);
+		\path (E) edge [to, transition ] (I);
+		\path (E) edge [to, transition ] (A);
+		
+		\path (S) edge [to, transition ] (O);
+		
+		\path (I) edge [to, transition] (R);
+		\path (A) edge [to, transition] (R);
+		\path (H) edge [to, transition] (R);
+		\path (C) edge [to, transition, bend left=25] (H);
+		
+		\path (I) edge [to, transition] (H);
+		\path (H) edge [to, transition] (C);
+		\path (C) edge [to, transition] (D);
+		
+		\path (I.west) edge [to, effect, bend right=25] (middleOfStoI);
+		\path (A.west) edge [to, effect, bend left =25] (middleOfStoI);
+		\path (aboveInf) edge [to, effect,  bend right=10] (middleOfStoI);
+		
+		
+
+
+		\node (Hlabel) [above right=0.5cm and 1.5cm of I, scale = 0.65, purple] {Hospitalisation};
+		\node (Clabel) [above right=0.5cm and 1.5cm of H, scale = 0.65, text width = 2.5cm, purple]  {Admitted to critical care};
+		\node (C3label) [above right=0.5cm and 1.4cm of C, scale = 0.65, purple] {Death};
+		
+		\node (Rlabel) [below left=2cm and 0.7cm of H, scale = 0.65, green] {Recovery};
+		\node (Rlabel) [right=1.7cm of E, text width = 2.2cm, scale = 0.65] {Become infectious};
+		\node (Flabel) [below left=1.4cm and 0.5cm of S, text width = 2cm, scale = 0.65] {Moved offsite};
+
+		% symbol meanings
+	    \node (Slab) [below right=2cm and 1.5cm of A, text width=8cm,   blue]      {$S$: Susceptible};
+	    \node (Elab) [below=0.5cm of Slab, text width=8cm,  cyan]   {$E$: Exposed};
+	    \node (Alab) [below=0.5cm of Elab, text width=8cm,  orange!60] {$A$: Asymptomatically infected};
+	    \node (Ilab) [below=0.5cm of Alab, text width=8cm,  orange] {$I$: Infected};
+	    \node (Rlab) [below=0.5cm of Ilab, text width=8cm,  green]  {$R$: Recovered};
+	    \node (Hlab) [below=0.5cm of Rlab, text width=8cm,  red]    {$H$: Hospitalised};
+	    \node (Clab) [below=0.5cm of Hlab, text width=8cm,  black]  {$C$: Critical Care};
+	    \node (Dlab) [below=0.5cm of Clab, text width=8cm,  purple] {$D$: Dead};
+	    \node (Olab) [below=0.5cm of Dlab, text width=8cm,  black]  {$F$: Offsite};
+		
+
+
+
+	\end{scope}
+
+\end{tikzpicture}

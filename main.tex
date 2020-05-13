@@ -1,0 +1,119 @@
+\documentclass[12pt]{ociamthesis}
+%load any additional packages
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{commath}
+\usepackage{textcomp}
+
+%------------------------
+\usepackage{graphicx}
+\usepackage{subfigure}
+%\usepackage{mwe}
+\usepackage{float}
+%\usepackage[justification=centering]{caption}
+\graphicspath{ {Images/} }
+\usepackage{siunitx}
+%-----------------------------------------
+\usepackage{mymacros}
+\usepackage{relsize}
+\usepackage{mathtools}
+%\usepackage{subcaption}
+%\usepackage{booktabs} % for tables
+%\usepackage{floatrow}
+
+
+%\usepackage[utf8]{inputenc} % probably not
+\usepackage[margin=0.9in]{geometry} % include?
+
+
+% color eqns
+\usepackage{xcolor}
+
+
+
+%---------------------
+% for diagrams
+
+\usepackage{helvet}
+% \usepackage{sansmathfonts}
+% \renewcommand{\familydefault}{\sfdefault}
+% \renewcommand{\rmdefault}{\sfdefault}
+% \usepackage[backend=biber]{biblatex}
+\usepackage{natbib}
+
+\usepackage{tikz}
+\usepackage{pgffor}
+\usetikzlibrary{arrows, shapes, calc, backgrounds, positioning, fit}
+
+
+
+% for boxes
+\usepackage{tcolorbox}
+\usepackage{pdflscape}
+
+
+%-------------------------
+
+
+
+
+
+
+
+
+%input macros (i.e. write your own macros file called mymacros.tex 
+%and uncomment the next line)
+\include{mymacros.sty}
+
+% \title{Ecological Niche Formation\\[1ex]     %your thesis title,
+%         in Spatial Models of\\[1ex]
+%         Coexistence Dynamics}   %note \\[1ex] is a line break in the title
+
+\title{Covid Project}
+\author{Nick Taylor}             %your name
+\college{}  %your college
+
+%\renewcommand{\submittedtext}{change the default text here if needed}
+\degree{}     %the degree
+\degreedate{}         %the degree date
+
+%end the preamble and start the document
+\begin{document}
+
+%this baselineskip gives sufficient line spacing for an examiner to easily
+%markup the thesis with comments
+\baselineskip=18pt plus1pt
+
+%set the number of sectioning levels that get number and appear in the contents
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+%\renewcommand{\thesection}{\arabic{section}} % my attempt to get numbering not as decimals
+
+% \maketitle                  % create a title page 
+\begin{romanpages}          % start roman page numbering
+\tableofcontents            % generate and include a table of contents
+% \listoffigures              % generate and include a list of figures
+\end{romanpages}            % end roman page numbering
+%now include the files of latex for each of the chapters etc
+
+\include{Chapter_1}
+
+
+
+
+
+%next line adds the Bibliography to the contents page
+\addcontentsline{toc}{chapter}{References}
+% % %uncomment next line to change bibliography name to references
+\renewcommand{\bibname}{References}
+\bibliography{refs}        %use a bibtex bibliography file refs.bib
+\bibliographystyle{apalike}  %use the plain bibliography style or this one????
+
+%now enable appendix numbering format and include any appendices
+\appendix
+\renewcommand\chaptermark[1]{\markboth{\sffamily\normalsize\bfseries \appendixname~\thechapter.}{}}
+\include{Appendix_1}
+
+
+\end{document}
