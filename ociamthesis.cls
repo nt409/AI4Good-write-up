@@ -7,9 +7,9 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{ociamthesis}[2010/11/22 v2.2 OCIAM thesis class]
 %-------------------------- initial code -----------------------
-
-% \DeclareOption{beltcrest}{\def\logoversion{beltcrest}}
-% \DeclareOption{shieldcrest}{\def\logoversion{shieldcrest}}
+\def\logoversion{squarelogo}
+\DeclareOption{beltcrest}{\def\logoversion{beltcrest}}
+\DeclareOption{shieldcrest}{\def\logoversion{shieldcrest}}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
 \ProcessOptions\relax
 \LoadClass[a4paper]{report}
@@ -38,6 +38,36 @@
 \def\college#1{\gdef\@college{#1}}
 
 
+%
+% Setup choosen crest/logo
+%
+
+\ifthenelse{\equal{\logoversion}{shieldcrest}}%
+{
+% Traditional Oxford shield crest
+%Using latex metafont (Mathematical Institute system)
+\font\crestfont=oxcrest40 scaled\magstep3
+\def\logo{{\crestfont \char1}}
+%For comlab system replace 1st line above with
+%\font\crestfont=crest scaled\magstep3
+}{}
+
+\ifthenelse{\equal{\logoversion}{beltcrest}}%
+{
+% Newer Oxford Belt crest
+%Using latex metafont (Mathematical Institute system)
+\font\beltcrestfont=oxbeltcrest
+\def\logo{{\beltcrestfont \char0}}
+%For comlab system replace 1st line above with
+%\font\beltcrestfont=newcrest
+}{}
+
+\ifthenelse{\equal{\logoversion}{squarelogo}}%
+{
+% Latest Logo, Square version (the default!)
+% you need an oxlogo.eps or oxlogo.pdf file as appropriate
+\def\logo{{\includegraphics[width=32mm]{camb.png}}}
+}{}
 
 %
 % Define text area of page and margin offsets
@@ -77,7 +107,7 @@
 {\large \vspace*{1ex}
     {{\@college} \par}
 \vspace*{1ex}
-    {University of Cambridge \par}
+    {AI For Good \par}
 \vspace*{25mm}
     {{\submittedtext} \par}
 \vspace*{1ex}
